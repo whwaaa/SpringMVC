@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RESTful风格请求</title>
+    <script src="https://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<body>
+    <h1 style="color:red">RESTful风格请求</h1>
+    <h3>查询所有的猫信息 url: /animal/cats</h3>
+    <div class="GETALL"></div><br>
+    <button class="GETALL_BUT">点击查询</button><br><hr>
+    <script>
+        $(".GETALL_BUT").on("click",function () {
+            $.ajax({
+                type: "GET",
+                url: "/animal/cats",
+                data: "",
+                dataType: "json",
+                success: function(list){
+                    console.log(list.list);
+                    $.each(list.list, function(i, n){
+                       var $_con = "catId:" + n.catId +
+                           " name:" + n.name +
+                           " color:" + n.color +
+                           " ear:" + n.ear +
+                           " birthday:" + new Date(n.birthday).toLocaleDateString() +
+                           "<br>";
+                       $(".GETALL").append($_con)
+                    });
+                }
+            });
+        })
+    </script>
+
+    <h3>查询ID为<input id="queryid" value="1"></input>的猫信息 url: /animal/cat/</h3>
+    <div class="GETONE"></div><br>
+    <button class="GETONE_BUT">点击查询</button><br><hr>
+    <script>
+        $(".GETONE_BUT").on("click",function (){
+            $.ajax({
+                type: "GET",
+                url: "/animal/cat/"+$("#queryid").val(),
+                data: "",
+                dataType: "json",
+                success: function(res){
+                    console.log(res);
+                    var $_con = "catId:" + res.obj.catId +
+                        " name:" + res.obj.name +
+                        " color:" + res.obj.color +
+                        " ear:" + res.obj.ear +
+                        " birthday:" + new Date(res.obj.birthday).toLocaleDateString() +
+                        "<br>";
+                    $(".GETONE").append($_con)
+                }
+            });
+        })
+    </script>
+
+    <h3>新增一只猫的信息</h3>
+    <form>
+        <input id="postcatid" name="catId" value="4"/>
+        <input id="postname" name="name" value="花花"/>
+        <input id="postcolor" name="color" value="灰色"/>
+        <input id="postear" name="ear" value="卷耳朵"/>
+        <input type="date" id="postbirthday" name="birthday" value="2021-03-10" />
+    </form>
+    <div class="ADDSTU"></div>
+    <button class="ADDSTU_BUT">点击新增</button><br><hr>
+    <script>
+        $(".ADDSTU_BUT").on("click", function () {
+            $.ajax({
+                type: "POST",
+                url: "/animal/cat",
+                data: {
+                    catId:$("#postcatid").val(),
+                    name:$("#postname").val(),
+                    color:$("#postcolor").val(),
+                    ear:$("#postear").val(),
+                    birthday:$("#postbirthday").val()
+                },
+                dataType: "json",
+                success: function(res){
+                    console.log(res);
+                    $(".ADDSTU").append(res.msg)
+                }
+            });
+        })
+    </script>
+
+    <h3>更改ID为<input id="patchcatid" name="catId" value="1"/>的猫咪姓名</h3>
+    <input type="text" name="name" id="patchname" value="酱酱"/>
+    <div class="UPDATEONE"></div><br>
+    <button class="UPDATEONE_PATCH">点击更新</button><br><hr>
+    <script>
+        $(".UPDATEONE_PATCH").on("click",function (){
+            $.ajax({
+                type: "POST",
+                url: "/animal/cat/" + $("#patchcatid").val(),
+                data: {name:$("#patchname").val(), _method:"PATCH"},
+                dataType: "json",
+                success: function(res){
+                    console.log(res);
+                    $(".UPDATEONE").append(res.msg)
+                }
+            });
+        })
+    </script>
+
+    <h3>更新ID为<input id="putupdatecatid" name="catId" value="1"/>的猫的所有信息</h3>
+    <form>
+        <input id="putcatid" name="catId" value="4"/>
+        <input id="putname" name="name" value="花花"/>
+        <input id="putcolor" name="color" value="灰色"/>
+        <input id="putear" name="ear" value="卷耳朵"/>
+        <input type="date" id="putbirthday" name="birthday" value="2021-03-10"/>
+    </form>
+    <div class="UPDATEALL"></div><br>
+    <button class="UPDATEALL_BUT">点击更新</button><br><hr>
+    <script>
+        $(".UPDATEALL_BUT").on("click",function (){
+            $.ajax({
+                type: "POST",
+                url: "/animal/cat/" + $("#putupdatecatid").val(),
+                data: {
+                    catId:$("#putcatid").val(),
+                    name:$("#putname").val(),
+                    color:$("#putcolor").val(),
+                    ear:$("#putear").val(),
+                    birthday:$("#putbirthday").val(),
+                    _method:"PUT"
+                },
+                dataType: "json",
+                success: function(res){
+                    console.log(res);
+                    $(".UPDATEALL").append(res.msg)
+                }
+            });
+        })
+    </script>
+
+    <h3>删除ID为<input id="deletecatid" name="catId" value="1"/>的猫的信息</h3>
+    <div class="DELETESTU"></div><br>
+    <button class="DELETESTU_BUT">点击删除</button><br><hr>
+    <script>
+        $(".DELETESTU_BUT").on("click", function(){
+            $.ajax({
+                type: "POST",
+                url: "/animal/cat/" + $("#deletecatid").val(),
+                data: {_method:"DELETE"},
+                dataType: "json",
+                success: function(res){
+                    console.log(res);
+                    $(".DELETESTU").append(res.msg)
+                }
+            })
+        })
+    </script>
+
+</body>
+</html>
